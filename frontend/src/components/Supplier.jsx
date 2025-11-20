@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import api from '../api';
 export default function Supplier() {
   const [suppliers, setSuppliers] = useState([]);
   const [search, setSearch] = useState("");
@@ -28,7 +28,7 @@ export default function Supplier() {
   // ==========================
   const fetchSupplier = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/supplier/all");
+      const res = await axios.get("/api/supplier/all");
       setSuppliers(res.data.data);
     } catch (error) {
       console.log("Fetch Error:", error);
@@ -46,7 +46,7 @@ export default function Supplier() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/supplier/add",
+        "/api/supplier/add",
         supplier
       );
 
@@ -84,7 +84,7 @@ export default function Supplier() {
     e.preventDefault();
     try {
       const res = await axios.put(
-        `http://localhost:8000/api/supplier/update/${editSupplier._id}`,
+        `/api/supplier/update/${editSupplier._id}`,
         editSupplier
       );
 
@@ -109,7 +109,7 @@ export default function Supplier() {
 
     try {
       const res = await axios.delete(
-        `http://localhost:8000/api/supplier/delete/${id}`
+        `/api/supplier/delete/${id}`
       );
 
       if (res.data.success) {
