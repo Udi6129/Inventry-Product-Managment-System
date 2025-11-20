@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
-
+import api from '../api';
 export default function CustomerProduct() {
   const { user } = useContext(AuthContext);
   const [products, setProducts] = useState([]);
@@ -19,7 +19,7 @@ export default function CustomerProduct() {
   // FETCH PRODUCTS
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/product/all");
+      const res = await axios.get("/api/product/all");
       setProducts(res.data.data);
     } catch (error) {
       console.error("Fetch Product Error:", error);
@@ -29,7 +29,7 @@ export default function CustomerProduct() {
   // FETCH CATEGORIES
   const fetchCategories = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/category/all");
+      const res = await axios.get("/api/category/all");
       setCategories(res.data.data);
     } catch (error) {
       console.error("Fetch Categories Error:", error);
@@ -90,7 +90,7 @@ export default function CustomerProduct() {
         date: new Date().toISOString(),
       };
 
-      await axios.post("http://localhost:8000/api/order/create", payload);
+      await axios.post("/api/order/create", payload);
       alert("Order Placed Successfully!");
       closeModal();
       fetchProducts();
