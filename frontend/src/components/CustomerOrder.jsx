@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import api from '../api';
 export default function CustomerOrders() {
   const [orders, setOrders] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -12,7 +12,7 @@ export default function CustomerOrders() {
   // Fetch Categories
   const fetchCategories = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/category/all");
+      const res = await axios.get("/api/category/all");
       setCategories(res.data.data);
     } catch (error) {
       console.log(error);
@@ -22,7 +22,7 @@ export default function CustomerOrders() {
   // Fetch Orders
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/order/all", {
+      const res = await axios.get("/api/order/all", {
         params: {
           search,
           category,
