@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
-
+import api from "../api";
 export default function ChangePassword() {
   const { token } = useContext(AuthContext);
   const [formData, setFormData] = useState({
@@ -28,7 +28,7 @@ export default function ChangePassword() {
     setIsSubmitting(true);
     try {
       await axios.post(
-        "http://localhost:8000/api/auth/change-password",
+        "/api/auth/change-password",
         { currentPassword, newPassword },
         {
           headers: {
