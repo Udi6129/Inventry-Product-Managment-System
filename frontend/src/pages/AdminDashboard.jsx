@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import api from "../api";
-const API_BASE_URL = "/api";
+const API_BASE_URL = "";
 
 const formatCurrency = (value = 0) =>
   new Intl.NumberFormat("en-IN", {
