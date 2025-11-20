@@ -3,7 +3,7 @@ import axios from "axios";
 import { FaUser, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-
+import api from '../api';
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const navigate = useNavigate(); // <-- for navigation
@@ -17,7 +17,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:8000/api/auth/login", formData);
+      const res = await axios.post("/api/auth/login", formData);
 
       if (res.data.success) {
         const { user, token } = res.data.data;
