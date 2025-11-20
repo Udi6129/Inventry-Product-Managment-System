@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import api from '../api';
 export default function Category() {
   const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState("");
@@ -21,7 +21,7 @@ export default function Category() {
   // ==========================
   const fetchCategories = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/category/all");
+      const res = await axios.get("/api/category/all");
       setCategories(res.data.data);
     } catch (error) {
       console.log("Fetch Error:", error);
@@ -39,7 +39,7 @@ export default function Category() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/category/add",
+        "/api/category/add",
         category
       );
       if (res.data.success) {
@@ -74,7 +74,7 @@ export default function Category() {
     e.preventDefault();
     try {
       const res = await axios.put(
-        `http://localhost:8000/api/category/update/${editCategory._id}`,
+        `/api/category/update/${editCategory._id}`,
         editCategory
       );
 
@@ -97,7 +97,7 @@ const handleDeleteCategory = async (id) => {
 
   try {
     const res = await axios.delete(
-      `http://localhost:8000/api/category/delete/${id}`
+      `/api/category/delete/${id}`
     );
 
     if (res.data.success) {
