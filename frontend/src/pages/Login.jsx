@@ -1,12 +1,12 @@
 import { useState, useContext } from "react";
-import axios from "axios";
 import { FaUser, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import api from '../api';
+import api from '../api'; // <- use api.js
+
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const navigate = useNavigate(); // <-- for navigation
+  const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
   const handleChange = (e) => {
@@ -17,7 +17,8 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("/auth/login", formData);
+      // ✅ Use api.post instead of axios.post
+      const res = await api.post("/auth/login", formData);
 
       if (res.data.success) {
         const { user, token } = res.data.data;
@@ -38,16 +39,13 @@ export default function Login() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-purple-400 via-pink-400 to-red-400">
       <div className="bg-white shadow-2xl rounded-2xl w-full max-w-md p-8">
-        
         <h2 className="text-3xl font-bold text-center text-purple-600 mb-6">
           Admin Login
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Email Address
-            </label>
+            <label className="block text-gray-700 font-medium mb-2">Email Address</label>
             <div className="flex items-center border border-gray-300 rounded-lg px-3">
               <FaUser className="text-gray-400 mr-2" />
               <input
@@ -63,9 +61,7 @@ export default function Login() {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Password
-            </label>
+            <label className="block text-gray-700 font-medium mb-2">Password</label>
             <div className="flex items-center border border-gray-300 rounded-lg px-3">
               <FaLock className="text-gray-400 mr-2" />
               <input
