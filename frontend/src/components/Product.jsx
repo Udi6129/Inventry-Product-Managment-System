@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import api from '../api';
 export default function Product() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -34,7 +34,7 @@ export default function Product() {
   // ==========================
 const fetchProducts = async () => {
   try {
-    const res = await axios.get("http://localhost:8000/api/product/all");
+    const res = await axios.get("/api/product/all");
     console.log("Fetched products:", res.data.data);
     setProducts([...res.data.data]); // Create new array copy to force update
   } catch (error) {
@@ -48,7 +48,7 @@ const fetchProducts = async () => {
   // ==========================
   const fetchCategories = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/category/all");
+      const res = await axios.get("/api/category/all");
       setCategories(res.data.data);
     } catch (error) {
       console.error("Category Fetch Error:", error);
@@ -58,7 +58,7 @@ const fetchProducts = async () => {
 
   const fetchSuppliers = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/supplier/all");
+      const res = await axios.get("/api/supplier/all");
       setSuppliers(res.data.data);
     } catch (error) {
       console.error("Supplier Fetch Error:", error);
@@ -100,7 +100,7 @@ const fetchProducts = async () => {
     if (!isValidProduct(product)) return; // Validation check
 
     try {
-      const res = await axios.post("http://localhost:8000/api/product/add", product);
+      const res = await axios.post("/api/product/add", product);
 
       if (res.data.success) {
         alert("Product Added Successfully!");
@@ -152,7 +152,7 @@ const fetchProducts = async () => {
 
     try {
       const res = await axios.put(
-        `http://localhost:8000/api/product/update/${editProduct._id}`,
+        `/api/product/update/${editProduct._id}`,
         editProduct
       );
 
@@ -175,7 +175,7 @@ const fetchProducts = async () => {
     if (!window.confirm("Are you sure?")) return;
 
     try {
-      const res = await axios.delete(`http://localhost:8000/api/product/delete/${id}`);
+      const res = await axios.delete(`/api/product/delete/${id}`);
 
       if (res.data.success) {
         alert("Product Deleted!");
