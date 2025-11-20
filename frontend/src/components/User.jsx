@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import api from '../api';
 export default function User() {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
@@ -20,7 +20,7 @@ export default function User() {
   // ==========================
   const fetchUser = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/user/all");
+      const res = await axios.get("/api/user/all");
       setUsers(res.data.data);
     } catch (error) {
       console.log("Fetch Error:", error);
@@ -38,7 +38,7 @@ export default function User() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/user/add-user",
+        "/api/user/add-user",
         user
       );
 
@@ -71,7 +71,7 @@ export default function User() {
 
     try {
       const res = await axios.delete(
-        `http://localhost:8000/api/user/delete-user/${id}`
+        `/api/user/delete-user/${id}`
       );
 
       if (res.data.success) {
