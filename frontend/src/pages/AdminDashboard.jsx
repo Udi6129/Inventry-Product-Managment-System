@@ -1,9 +1,8 @@
 import { useContext, useEffect, useMemo, useState } from "react";
-import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import api from "../api";
-const API_BASE_URL = "";
 
+// Format currency
 const formatCurrency = (value = 0) =>
   new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -11,6 +10,7 @@ const formatCurrency = (value = 0) =>
     maximumFractionDigits: 0,
   }).format(value);
 
+// Stat card component
 const StatCard = ({ title, value, subtext, gradient }) => (
   <div
     className={`p-6 rounded-2xl text-white shadow-md hover:shadow-lg transition-transform duration-300 hover:-translate-y-1 ${gradient}`}
@@ -23,6 +23,7 @@ const StatCard = ({ title, value, subtext, gradient }) => (
   </div>
 );
 
+// Section card component
 const SectionCard = ({ title, children, countBadge }) => (
   <div className="bg-white rounded-2xl shadow-sm p-6 h-full flex flex-col">
     <div className="flex items-center justify-between mb-4">
@@ -44,13 +45,14 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Fetch dashboard data
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
       setError("");
       const [productRes, orderRes] = await Promise.all([
-        axios.get(`${API_BASE_URL}/product/all`),
-        axios.get(`${API_BASE_URL}/order/all`),
+        api.get("/product/all"),
+        api.get("/order/all"),
       ]);
 
       setProducts(productRes?.data?.data || []);
@@ -67,6 +69,7 @@ export default function AdminDashboard() {
     fetchDashboardData();
   }, []);
 
+  // Memoized calculations
   const {
     totalProducts,
     totalStock,
@@ -104,6 +107,7 @@ export default function AdminDashboard() {
       0
     );
 
+    // Best seller calculation
     const salesMap = {};
     orders.forEach((order) => {
       const key = order.productName || "Unknown";
@@ -116,15 +120,14 @@ export default function AdminDashboard() {
       }
       salesMap[key].units += Number(order.quantity) || 0;
     });
-
     const bestSellerProduct = Object.values(salesMap).sort(
       (a, b) => b.units - a.units
     )[0];
 
+    // Stock checks
     const outOfStockProducts = products.filter(
       (product) => (Number(product.stock) || 0) === 0
     );
-
     const lowStockProducts = products
       .filter((product) => {
         const stock = Number(product.stock) || 0;
@@ -145,6 +148,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300 bg-[#f7f8fc]">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
           <p className="text-sm uppercase text-gray-400 tracking-widest">Inventory Overview</p>
@@ -173,7 +177,7 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Top Metrics */}
+      {/* Top metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
         <StatCard
           title="Total Products"
@@ -201,8 +205,9 @@ export default function AdminDashboard() {
         />
       </div>
 
-      {/* Detailed Sections */}
+      {/* Sections */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+        {/* Out of stock */}
         <SectionCard title="Out of Stock" countBadge={outOfStock.length}>
           {outOfStock.length === 0 ? (
             <p className="text-sm text-gray-500">Great! Every product is in stock.</p>
@@ -228,6 +233,7 @@ export default function AdminDashboard() {
           )}
         </SectionCard>
 
+        {/* Best seller */}
         <SectionCard title="Highest Sale Product">
           {(!bestSeller || bestSeller.units === 0) ? (
             <p className="text-sm text-gray-500">Sales data will appear after orders arrive.</p>
@@ -253,7 +259,7 @@ export default function AdminDashboard() {
         </SectionCard>
       </div>
 
-      {/* Low Stock Alert */}
+      {/* Low stock */}
       <div className="mt-8">
         <SectionCard title="Low Stock Alert" countBadge={lowStock.length}>
           {lowStock.length === 0 ? (
