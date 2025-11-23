@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 
-export const serverUrl = "http://localhost:8000"; // Backend server URL
+export const serverUrl = "https://inventry-product-ms.onrender.com"; // Backend server URL
 
 export const AuthContext = createContext();
 
