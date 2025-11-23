@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { serverUrl } from "../context/AuthContext";
 
 export default function Category() {
   const [categories, setCategories] = useState([]);
@@ -21,7 +22,7 @@ export default function Category() {
   // ==========================
   const fetchCategories = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/category/all");
+      const res = await axios.get(`${serverUrl}/api/category/all`);
       setCategories(res.data.data);
     } catch (error) {
       console.log("Fetch Error:", error);
@@ -38,10 +39,7 @@ export default function Category() {
   const handleAddCategory = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "http://localhost:8000/api/category/add",
-        category
-      );
+      const res = await axios.post(`${serverUrl}/api/category/add`, category);
       if (res.data.success) {
         alert("Category Added Successfully!");
         setCategory({ name: "", description: "" });
@@ -74,7 +72,7 @@ export default function Category() {
     e.preventDefault();
     try {
       const res = await axios.put(
-        `http://localhost:8000/api/category/update/${editCategory._id}`,
+        `${serverUrl}/api/category/update/${editCategory._id}`,
         editCategory
       );
 
@@ -96,9 +94,7 @@ const handleDeleteCategory = async (id) => {
   if (!window.confirm("Are you sure you want to delete this category?")) return;
 
   try {
-    const res = await axios.delete(
-      `http://localhost:8000/api/category/delete/${id}`
-    );
+    const res = await axios.delete(`${serverUrl}/api/category/delete/${id}`);
 
     if (res.data.success) {
       alert("Category Deleted Successfully!");

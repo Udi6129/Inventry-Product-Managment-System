@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
+import { serverUrl } from "../context/AuthContext";
 
 export default function Supplier() {
   const [suppliers, setSuppliers] = useState([]);
@@ -28,7 +29,7 @@ export default function Supplier() {
   // ==========================
   const fetchSupplier = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/supplier/all");
+      const res = await axios.get(`${serverUrl}/api/supplier/all`);
       setSuppliers(res.data.data);
     } catch (error) {
       console.log("Fetch Error:", error);
@@ -46,7 +47,7 @@ export default function Supplier() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/supplier/add",
+        `${serverUrl}/api/supplier/add`,
         supplier
       );
 
@@ -84,7 +85,7 @@ export default function Supplier() {
     e.preventDefault();
     try {
       const res = await axios.put(
-        `http://localhost:8000/api/supplier/update/${editSupplier._id}`,
+        `${serverUrl}/api/supplier/update/${editSupplier._id}`,
         editSupplier
       );
 
@@ -109,7 +110,7 @@ export default function Supplier() {
 
     try {
       const res = await axios.delete(
-        `http://localhost:8000/api/supplier/delete/${id}`
+        `${serverUrl}/api/supplier/delete/${id}`
       );
 
       if (res.data.success) {

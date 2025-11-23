@@ -1,9 +1,10 @@
 import dotenv from "dotenv";
+dotenv.config();
 import bcrypt from "bcrypt";
 import ConnectDB from "./config/db.js";
 import userModel from "./Modals/user.modal.js";
 
-dotenv.config();
+
 
 const register = async () => {
   try {

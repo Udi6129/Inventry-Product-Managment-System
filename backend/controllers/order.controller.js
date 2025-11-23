@@ -1,6 +1,15 @@
-import Order from "../Modals/order.modal.js"; // Correct path
+import Order from "../Modals/order.modal.js";
+import Product from "../Modals/product.modal.js";
 
-import Product from "../Modals/product.modal.js"; // Agar stock update karna ho
+// GET ALL ORDERS (for admin)
+export const getOrders = async (req, res) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 });
+    res.json({ success: true, orders });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
 
 // CREATE ORDER
 export const createOrder = async (req, res) => {
@@ -45,13 +54,13 @@ export const createOrder = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
-
-// GET ORDERS WITH FILTERS
-export const getOrders = async (req, res) => {
+// GET USER ORDERS WITH FILTERS
+export const getUserOrders = async (req, res) => {
   try {
+    const { userId } = req.params;
     const { search = "", category = "", date = "" } = req.query;
 
-    let filter = {};
+    const filter = { userId };
 
     if (search) {
       filter.productName = { $regex: search, $options: "i" };

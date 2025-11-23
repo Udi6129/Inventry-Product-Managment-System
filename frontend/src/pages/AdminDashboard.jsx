@@ -1,9 +1,8 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
-
-const API_BASE_URL = "http://localhost:8000/api";
-
+import {serverUrl} from "../context/AuthContext";
+ 
 const formatCurrency = (value = 0) =>
   new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -38,26 +37,39 @@ const SectionCard = ({ title, children, countBadge }) => (
 );
 
 export default function AdminDashboard() {
-  const { user } = useContext(AuthContext);
+  const { user, token } = useContext(AuthContext);
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const fetchDashboardData = async () => {
+    if (!token) {
+      setError("Authentication required. Please log in.");
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError("");
+      
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+
       const [productRes, orderRes] = await Promise.all([
-        axios.get(`${API_BASE_URL}/product/all`),
-        axios.get(`${API_BASE_URL}/order/all`),
+        axios.get(`${serverUrl}/api/product/all`, config),
+        axios.get(`${serverUrl}/api/order/all`, config),
       ]);
 
       setProducts(productRes?.data?.data || []);
       setOrders(orderRes?.data?.orders || []);
     } catch (err) {
       console.error("Dashboard data fetch failed:", err);
-      setError("Unable to load live data. Please retry in a moment.");
+      setError("Unable to load live data. Please log in again or check your connection.");
     } finally {
       setLoading(false);
     }

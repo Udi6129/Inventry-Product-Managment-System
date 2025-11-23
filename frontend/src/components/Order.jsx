@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
+import { AuthContext, serverUrl } from "../context/AuthContext";
 
 export default function Order() {
   const [orders, setOrders] = useState([]);
@@ -10,41 +11,44 @@ export default function Order() {
   const [category, setCategory] = useState("");
   const [date, setDate] = useState("");
 
+  const { user, token } = useContext(AuthContext);
+
   // Fetch Categories
   const fetchCategories = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/category/all");
-      setCategories(res.data.data);
+      const res = await axios.get(`${serverUrl}/api/category/all`);
+      setCategories(res.data.data || []);
     } catch (error) {
-      console.log(error);
+      console.log("Error fetching categories:", error);
     }
   };
 
   // Fetch Orders
   const fetchOrders = async () => {
+    if (!user || !token) return;
+
     try {
       const [orderRes, productRes] = await Promise.all([
-        axios.get("http://localhost:8000/api/order/all", {
-          params: {
-            search,
-            category,
-            date,
+        axios.get(`${serverUrl}/api/order/user-orders/${user._id}`, {
+          params: { search, category, date },
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
         }),
-        axios.get("http://localhost:8000/api/product/all"),
+
+        axios.get(`${serverUrl}/api/product/all`)
       ]);
 
       setOrders(orderRes.data?.orders || []);
 
       const stockMap = {};
       (productRes.data?.data || []).forEach((product) => {
-        if (product?.name !== undefined) {
-          stockMap[product.name] = product.stock ?? 0;
-        }
+        stockMap[product.name] = product.stock ?? 0;
       });
       setProductStockMap(stockMap);
+
     } catch (error) {
-      console.log(error);
+      console.log("Order fetch error:", error);
     }
   };
 
@@ -62,7 +66,6 @@ export default function Order() {
       {/* Filters Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
 
-        {/* Search */}
         <input
           type="text"
           placeholder="Search product..."
@@ -71,7 +74,6 @@ export default function Order() {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        {/* Category Dropdown */}
         <select
           className="border px-3 py-2 rounded-lg"
           value={category}
@@ -79,13 +81,12 @@ export default function Order() {
         >
           <option value="">All Categories</option>
           {categories.map((c) => (
-            <option value={c.name} key={c._id}>
+            <option key={c._id} value={c.name}>
               {c.name}
             </option>
           ))}
         </select>
 
-        {/* Date Picker */}
         <input
           type="date"
           className="border px-3 py-2 rounded-lg"
@@ -124,7 +125,7 @@ export default function Order() {
                     : "N/A"}
                 </td>
                 <td className="px-4 py-2">₹{o.totalPrice}</td>
-                <td className="px-4 py-2">{o.date ? o.date.slice(0, 10) : "-"}</td>
+                <td className="px-4 py-2">{o.date?.slice(0, 10) || "-"}</td>
               </tr>
             ))}
           </tbody>
